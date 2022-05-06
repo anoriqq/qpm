@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	"github.com/anoriqq/qpm/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -20,17 +21,33 @@ func init() {
 }
 
 func installRun(_ *cobra.Command, args []string) error {
+	if !config.HasScriptDir() {
+		scriptDir, err := surveyScriptDir()
+		if err != nil {
+			return err
+		}
+
+		err = config.SetScriptDir(scriptDir)
+		if err != nil {
+			return err
+		}
+	}
+
 	pkgName, err := getPkgName(args)
 	if err != nil {
 		return err
 	}
 
-	installScriptPath, err := getInstallScriptPaht(pkgName)
+	installScriptPath, err := getInstallScriptPaht(config.Cfg.ScriptDir, pkgName)
 	if err != nil {
 		return err
 	}
 
 	return execInstallScript(installScriptPath)
+}
+
+func surveyScriptDir() (string, error) {
+	return "", nil
 }
 
 func getPkgName(args []string) (string, error) {
@@ -41,9 +58,8 @@ func getPkgName(args []string) (string, error) {
 	return args[0], nil
 }
 
-func getInstallScriptPaht(pkgName string) (string, error) {
-	// TODO: パスを決め打ちしないでconfigで持つ
-	installScriptPath, err := filepath.Abs(fmt.Sprintf("./%s/install.sh", pkgName))
+func getInstallScriptPaht(scriptDir, pkgName string) (string, error) {
+	installScriptPath, err := filepath.Abs(fmt.Sprintf("%s/%s/install.sh", scriptDir, pkgName))
 	if err != nil {
 		return "", err
 	}
