@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/anoriqq/qpm/internal/config"
@@ -76,7 +78,7 @@ func getPkgName(args []string) (string, error) {
 }
 
 func getInstallScriptPaht(scriptDir, pkgName string) (string, error) {
-	installScriptPath, err := filepath.Abs(fmt.Sprintf("%s/%s/install.sh", scriptDir, pkgName))
+	installScriptPath, err := filepath.Abs(fmt.Sprintf("%s/%s/latest.sh", scriptDir, pkgName))
 	if err != nil {
 		return "", err
 	}
@@ -90,12 +92,19 @@ func execInstallScript(installScriptPath string) error {
 		return fmt.Errorf("install script not found: %s", installScriptPath)
 	}
 
-	o, err := exec.Command("/bin/sh", installScriptPath).Output()
+	c := exec.Command("/bin/sh", installScriptPath, "install", runtime.GOOS, runtime.GOARCH)
+
+	stdout, err := c.StdoutPipe()
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(string(o))
+	c.Start()
 
-	return nil
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	return c.Wait()
 }
