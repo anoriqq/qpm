@@ -3,9 +3,11 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/anoriqq/qpm/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -47,7 +49,22 @@ func installRun(_ *cobra.Command, args []string) error {
 }
 
 func surveyScriptDir() (string, error) {
-	return "", nil
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	var scriptDir string
+	p := &survey.Input{
+		Message: "Please enter qpm script path.",
+		Default: filepath.Join(home, ".qpm"),
+	}
+	err = survey.AskOne(p, &scriptDir, survey.WithValidator(survey.Required))
+	if err != nil {
+		return "", err
+	}
+
+	return scriptDir, nil
 }
 
 func getPkgName(args []string) (string, error) {
@@ -68,6 +85,11 @@ func getInstallScriptPaht(scriptDir, pkgName string) (string, error) {
 }
 
 func execInstallScript(installScriptPath string) error {
+	_, err := os.Stat(installScriptPath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("install script not found: %s", installScriptPath)
+	}
+
 	o, err := exec.Command("/bin/sh", installScriptPath).Output()
 	if err != nil {
 		return err
