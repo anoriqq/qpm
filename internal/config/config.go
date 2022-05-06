@@ -87,5 +87,10 @@ func HasScriptDir() bool {
 func SetScriptDir(scriptDir string) error {
 	viper.Set("ScriptDir", scriptDir)
 
-	return viper.WriteConfig()
+	err :=  viper.WriteConfig()
+	if err != nil {
+		return err
+	}
+
+	return viper.Unmarshal(&Cfg)
 }
