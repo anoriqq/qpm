@@ -21,9 +21,14 @@ func init() {
 	rootCmd.AddCommand(configCmd)
 }
 
-var r = strings.NewReplacer("{", "", "}", "", ":", ": ")
+var jsonToStringReplacer = strings.NewReplacer("{", "", "}", "")
 
 func configRun(_ *cobra.Command, args []string) error {
+	if len(args) == 0 {
+		printConfig()
+		return nil
+	}
+
 	if len(args) < 2 {
 		return errors.New("config field and value is required")
 	}
@@ -46,7 +51,16 @@ func configRun(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("unknown config field: %s", configField)
 	}
 
-	fmt.Println(r.Replace(fmt.Sprintf("%+v\n", config.Cfg)))
+	printConfig()
 
 	return nil
+}
+
+func printConfig() {
+	cfgText := fmt.Sprintf("%+v\n", config.Cfg)
+	cfgTexts := strings.Split(cfgText, " ")
+	for _, t := range cfgTexts {
+		text := strings.Replace(jsonToStringReplacer.Replace(t), ":", ": ", 1)
+		fmt.Println(text)
+	}
 }
