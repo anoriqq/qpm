@@ -63,7 +63,10 @@ func createIfNotExistConfigFile(configHome, configName, configType string) error
 var Cfg Config
 
 type Config struct {
-	ScriptDir string
+	ScriptDir         string
+	ScriptRepoURL     string
+	GitHubUsername    string
+	GitHubAccessToken string
 }
 
 func Load() error {
@@ -86,6 +89,51 @@ func HasScriptDir() bool {
 
 func SetScriptDir(scriptDir string) error {
 	viper.Set("ScriptDir", scriptDir)
+
+	err := viper.WriteConfig()
+	if err != nil {
+		return err
+	}
+
+	return viper.Unmarshal(&Cfg)
+}
+
+func HasScriptRepoURL() bool {
+	return len(Cfg.ScriptRepoURL) != 0
+}
+
+func SetScriptRepoURL(scriptRepoURL string) error {
+	viper.Set("ScriptRepoURL", scriptRepoURL)
+
+	err := viper.WriteConfig()
+	if err != nil {
+		return err
+	}
+
+	return viper.Unmarshal(&Cfg)
+}
+
+func HasGitHubUsername() bool {
+	return len(Cfg.GitHubUsername) != 0
+}
+
+func SetGitHubUsername(githubUsername string) error {
+	viper.Set("GitHubUsername", githubUsername)
+
+	err := viper.WriteConfig()
+	if err != nil {
+		return err
+	}
+
+	return viper.Unmarshal(&Cfg)
+}
+
+func HasGitHubAccessToken() bool {
+	return len(Cfg.GitHubAccessToken) != 0
+}
+
+func SetGitHubAccessToken(githubAccessToken string) error {
+	viper.Set("GitHubAccessToken", githubAccessToken)
 
 	err := viper.WriteConfig()
 	if err != nil {

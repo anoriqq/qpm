@@ -1,10 +1,11 @@
 package git
 
 import (
-	"context"
+	"errors"
+	"net/http"
 
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	ghttp "github.com/go-git/go-git/v5/plumbing/transport/http"
 )
 
 type client struct {
@@ -13,26 +14,15 @@ type client struct {
 	repo        *git.Repository
 }
 
-func (c *client) Open(path string) error {
-	repo, err := git.PlainOpen(path)
-	if err != nil {
-		return err
-	}
-
-	c.repo = repo
-
-	return nil
-}
-
-func (c *client) Clone(ctx context.Context, path, url string) error {
+func (c *client) Clone(path, url string) error {
 	o := &git.CloneOptions{
 		URL: url,
-		Auth: &http.BasicAuth{
+		Auth: &ghttp.BasicAuth{
 			Username: c.username,
 			Password: c.accessToken,
 		},
 	}
-	repo, err := git.PlainCloneContext(ctx, path, false, o)
+	repo, err := git.PlainClone(path, false, o)
 	if err != nil {
 		return err
 	}
@@ -42,9 +32,31 @@ func (c *client) Clone(ctx context.Context, path, url string) error {
 	return nil
 }
 
-func NewClient(username, accessToken string) *client {
-	return &client{
+func (c *client) authTest() error {
+	req, err := http.NewRequest(http.MethodGet, "https://api.github.com/user", nil)
+	req.SetBasicAuth(c.username, c.accessToken)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("token is invalid")
+	}
+
+	return nil
+}
+
+func NewClient(username, accessToken string) (*client, error) {
+	c := &client{
 		username:    username,
 		accessToken: accessToken,
 	}
+
+	err := c.authTest()
+	if err != nil {
+		return nil, err
+	}
+
+	return c, nil
 }
