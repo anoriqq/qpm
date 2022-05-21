@@ -36,6 +36,12 @@ func configRun(_ *cobra.Command, args []string) error {
 	switch strings.ToLower(configField) {
 	case "scriptdir":
 		config.SetScriptDir(configValue)
+	case "scriptrepourl":
+		config.SetScriptRepoURL(configValue)
+	case "githubusername":
+		config.SetGitHubUsername(configValue)
+	case "githubaccesstoken":
+		config.SetGitHubAccessToken(configValue)
 	default:
 		return fmt.Errorf("unknown config field: %s", configField)
 	}
