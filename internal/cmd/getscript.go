@@ -14,8 +14,9 @@ import (
 )
 
 var getscriptCmd = &cobra.Command{
-	Use:  "getscript",
-	RunE: getscriptRun,
+	Use:   "getscript",
+	Short: "get script dir form remote repository",
+	RunE:  getscriptRun,
 }
 
 func init() {
