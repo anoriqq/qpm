@@ -83,7 +83,7 @@ func Load() error {
 	return nil
 }
 
-func HasScriptDir() bool {
+func hasScriptDir() bool {
 	return len(Cfg.ScriptDir) != 0
 }
 
@@ -98,7 +98,7 @@ func SetScriptDir(scriptDir string) error {
 	return viper.Unmarshal(&Cfg)
 }
 
-func HasScriptRepoURL() bool {
+func hasScriptRepoURL() bool {
 	return len(Cfg.ScriptRepoURL) != 0
 }
 
@@ -113,7 +113,7 @@ func SetScriptRepoURL(scriptRepoURL string) error {
 	return viper.Unmarshal(&Cfg)
 }
 
-func HasGitHubUsername() bool {
+func hasGitHubUsername() bool {
 	return len(Cfg.GitHubUsername) != 0
 }
 
@@ -128,7 +128,7 @@ func SetGitHubUsername(githubUsername string) error {
 	return viper.Unmarshal(&Cfg)
 }
 
-func HasGitHubAccessToken() bool {
+func hasGitHubAccessToken() bool {
 	return len(Cfg.GitHubAccessToken) != 0
 }
 

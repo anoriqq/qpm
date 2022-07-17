@@ -1,16 +1,9 @@
 package cmd
 
 import (
-	"bufio"
 	"errors"
-	"fmt"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"runtime"
 
-	"github.com/AlecAivazis/survey/v2"
-	"github.com/anoriqq/qpm/internal/config"
+	"github.com/anoriqq/qpm/internal/service/install"
 	"github.com/spf13/cobra"
 )
 
@@ -25,48 +18,12 @@ func init() {
 }
 
 func installRun(_ *cobra.Command, args []string) error {
-	if !config.HasScriptDir() {
-		scriptDir, err := surveyScriptDir()
-		if err != nil {
-			return err
-		}
-
-		err = config.SetScriptDir(scriptDir)
-		if err != nil {
-			return err
-		}
-	}
-
 	pkgName, err := getPkgName(args)
 	if err != nil {
 		return err
 	}
 
-	installScriptPath, err := getInstallScriptPaht(config.Cfg.ScriptDir, pkgName)
-	if err != nil {
-		return err
-	}
-
-	return execInstallScript(installScriptPath)
-}
-
-func surveyScriptDir() (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-
-	var scriptDir string
-	p := &survey.Input{
-		Message: "Please enter qpm script path.",
-		Default: filepath.Join(home, ".qpm"),
-	}
-	err = survey.AskOne(p, &scriptDir, survey.WithValidator(survey.Required))
-	if err != nil {
-		return "", err
-	}
-
-	return scriptDir, nil
+	return install.Install(pkgName)
 }
 
 func getPkgName(args []string) (string, error) {
@@ -75,36 +32,4 @@ func getPkgName(args []string) (string, error) {
 	}
 
 	return args[0], nil
-}
-
-func getInstallScriptPaht(scriptDir, pkgName string) (string, error) {
-	installScriptPath, err := filepath.Abs(fmt.Sprintf("%s/%s/latest.sh", scriptDir, pkgName))
-	if err != nil {
-		return "", err
-	}
-
-	return installScriptPath, nil
-}
-
-func execInstallScript(installScriptPath string) error {
-	_, err := os.Stat(installScriptPath)
-	if os.IsNotExist(err) {
-		return fmt.Errorf("install script not found: %s", installScriptPath)
-	}
-
-	c := exec.Command("/bin/sh", installScriptPath, "install", runtime.GOOS, runtime.GOARCH)
-
-	stdout, err := c.StdoutPipe()
-	if err != nil {
-		return err
-	}
-
-	c.Start()
-
-	scanner := bufio.NewScanner(stdout)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
-
-	return c.Wait()
 }
