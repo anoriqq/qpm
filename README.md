@@ -19,6 +19,7 @@ Available Commands:
   getscript   get script dir form remote repository
   help        Help about any command
   install     install packages
+  version     show version info
 
 Flags:
   -h, --help   help for qpm
