@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
-	"strings"
 
-	"github.com/anoriqq/qpm/internal/config"
+	"github.com/anoriqq/qpm/internal/service/config"
 	"github.com/spf13/cobra"
 )
 
@@ -21,46 +19,33 @@ func init() {
 	rootCmd.AddCommand(configCmd)
 }
 
-var jsonToStringReplacer = strings.NewReplacer("{", "", "}", "")
-
 func configRun(_ *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		printConfig()
+		config.PrintConfig()
 		return nil
 	}
 
-	if len(args) < 2 {
-		return errors.New("config field and value is required")
-	}
-	if len(args) != 2 {
-		return errors.New("too many arguments")
+	configField, configValue, err := getConfigInput(args)
+	if err != nil {
+		return err
 	}
 
-	configField, configValue := args[0], args[1]
-
-	switch strings.ToLower(configField) {
-	case "scriptdir":
-		config.SetScriptDir(configValue)
-	case "scriptrepourl":
-		config.SetScriptRepoURL(configValue)
-	case "githubusername":
-		config.SetGitHubUsername(configValue)
-	case "githubaccesstoken":
-		config.SetGitHubAccessToken(configValue)
-	default:
-		return fmt.Errorf("unknown config field: %s", configField)
+	err = config.SetConfig(configField, configValue)
+	if err != nil {
+		return err
 	}
 
-	printConfig()
-
+	config.PrintConfig()
 	return nil
 }
 
-func printConfig() {
-	cfgText := fmt.Sprintf("%+v\n", config.Cfg)
-	cfgTexts := strings.Split(cfgText, " ")
-	for _, t := range cfgTexts {
-		text := strings.Replace(jsonToStringReplacer.Replace(t), ":", ": ", 1)
-		fmt.Println(text)
+func getConfigInput(args []string) (field, value string, err error) {
+	if len(args) < 2 {
+		return "", "", errors.New("config field and value is required")
 	}
+	if len(args) > 2 {
+		return "", "", errors.New("too many arguments")
+	}
+
+	return args[0], args[1], nil
 }

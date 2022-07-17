@@ -34,6 +34,10 @@ func (c *client) Clone(path, url string) error {
 
 func (c *client) authTest() error {
 	req, err := http.NewRequest(http.MethodGet, "https://api.github.com/user", nil)
+	if err != nil {
+		return err
+	}
+
 	req.SetBasicAuth(c.username, c.accessToken)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
