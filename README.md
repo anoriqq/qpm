@@ -26,3 +26,16 @@ Flags:
 
 Use "qpm [command] --help" for more information about a command.
 ```
+
+## Aquifer
+Aquifer defines the package installation and uninstallation plans.  
+It has the following directory structure.
+
+```txt
+.
+└── pkgname
+    ├── v1.18.yml
+    └── latest.yml
+```
+
+Please refer to [the template](https://github.com/anoriqq/qpm/blob/b600c503f98c4d68ac0428dc03e36505988c2826/template/pkgname/latest.yml) for the yml file.
