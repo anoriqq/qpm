@@ -1,5 +1,5 @@
 # qpm
-📦 Simple Package Manager
+📦 Qanat Package Manager
 
 ## Installation
 ```sh
