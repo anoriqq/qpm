@@ -2,6 +2,8 @@ name: release
 
 on:
   create:
+    branches:
+      - main
     tags:
       - 'v*'
 
