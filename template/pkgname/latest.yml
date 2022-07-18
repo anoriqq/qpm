@@ -1,0 +1,35 @@
+# Aquifer file version
+version: '0'
+
+# Package name
+name: 'template'
+
+# Install plan
+# Define dependencies and shell scripts for each OS
+# Dependencies are an array of package names
+# Shell scripts are defined by an array
+install:
+  linux:
+    dependencies: []
+    run: []
+  windows:
+    dependencies: []
+    run: []
+  darwin:
+    dependencies: []
+    run: []
+
+# Uninstall plan
+# Define dependencies and shell scripts for each OS
+# Dependencies are an array of package names
+# Shell scripts are defined by an array
+uninstall:
+  linux:
+    dependencies: []
+    run: []
+  windows:
+    dependencies: []
+    run: []
+  darwin:
+    dependencies: []
+    run: []
