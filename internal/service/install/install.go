@@ -1,14 +1,16 @@
 package install
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 
 	"github.com/anoriqq/qpm/internal/config"
+	"github.com/fatih/color"
+	"github.com/goccy/go-yaml"
 )
 
 func Install(pkgName string) error {
@@ -24,11 +26,11 @@ func Install(pkgName string) error {
 		return err
 	}
 
-	return execInstallScript(installScriptPath)
+	return installAquifer(installScriptPath)
 }
 
 func getInstallScriptPaht(scriptDir, pkgName string) (string, error) {
-	installScriptPath, err := filepath.Abs(fmt.Sprintf("%s/%s/latest.sh", scriptDir, pkgName))
+	installScriptPath, err := filepath.Abs(fmt.Sprintf("%s/%s/latest.yml", scriptDir, pkgName))
 	if err != nil {
 		return "", err
 	}
@@ -36,25 +38,69 @@ func getInstallScriptPaht(scriptDir, pkgName string) (string, error) {
 	return installScriptPath, nil
 }
 
-func execInstallScript(installScriptPath string) error {
+type plan struct {
+	Dependencies []string
+	Run          []string
+}
+
+type Aquifer struct {
+	Version   string
+	Name      string
+	Install   map[string]plan
+	Uninstall map[string]plan
+}
+
+var headerOutput = color.New(color.FgHiCyan).Add(color.Bold)
+
+const (
+	envOS   = "QPM_OS"
+	envArch = "QPM_ARCH"
+)
+
+func installAquifer(installScriptPath string) error {
 	_, err := os.Stat(installScriptPath)
 	if os.IsNotExist(err) {
 		return fmt.Errorf("install script not found: %s", installScriptPath)
 	}
 
-	c := exec.Command("/bin/sh", installScriptPath, "install", runtime.GOOS, runtime.GOARCH)
+	f, err := os.Open(installScriptPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
 
-	stdout, err := c.StdoutPipe()
+	bytes, err := io.ReadAll(f)
 	if err != nil {
 		return err
 	}
 
-	c.Start()
-
-	scanner := bufio.NewScanner(stdout)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+	var aquifer Aquifer
+	err = yaml.Unmarshal(bytes, &aquifer)
+	if err != nil {
+		return err
 	}
 
-	return c.Wait()
+	cmds, ok := aquifer.Install[runtime.GOOS]
+	if !ok {
+		return fmt.Errorf("not declared os: %s", runtime.GOOS)
+	}
+
+	for i, v := range cmds.Run {
+		headerOutput.Printf("[%d] %s\n", i+1, v)
+
+		c := exec.Command("bash", "-c", v)
+		c.Env = append(c.Env,
+			fmt.Sprintf("%s=%s", envOS, runtime.GOARCH),
+			fmt.Sprintf("%s=%s", envArch, runtime.GOOS),
+		)
+
+		output, err := c.Output()
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("%v", string(output))
+	}
+
+	return nil
 }
