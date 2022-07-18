@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 
+	"github.com/anoriqq/qpm/internal/config"
 	"github.com/anoriqq/qpm/internal/service/aquifer"
 	"github.com/spf13/cobra"
 )
@@ -13,8 +14,11 @@ var installCmd = &cobra.Command{
 	RunE:  installRun,
 }
 
+var aquiferDir string
+
 func init() {
 	rootCmd.AddCommand(installCmd)
+	installCmd.PersistentFlags().StringVarP(&aquiferDir, "aquifer-dir", "d", "", "aquifer dir")
 }
 
 func installRun(_ *cobra.Command, args []string) error {
@@ -23,7 +27,7 @@ func installRun(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	return aquifer.Install(pkgName)
+	return aquifer.Install(getAquiferDir(), pkgName)
 }
 
 func getPkgName(args []string) (string, error) {
@@ -32,4 +36,12 @@ func getPkgName(args []string) (string, error) {
 	}
 
 	return args[0], nil
+}
+
+func getAquiferDir() string {
+	if len(aquiferDir) != 0 {
+		return aquiferDir
+	}
+
+	return config.Cfg.AquiferDir
 }
