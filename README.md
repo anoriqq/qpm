@@ -14,9 +14,9 @@ Usage:
   qpm [command]
 
 Available Commands:
+  aquifer     manage aquifer
   completion  Generate the autocompletion script for the specified shell
   config      update config
-  getscript   get script dir form remote repository
   help        Help about any command
   install     install packages
   version     show version info
