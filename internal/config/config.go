@@ -83,12 +83,21 @@ func Load() error {
 	return nil
 }
 
+const (
+	ConfigNameAquiferDir = "AquiferDir"
+	ConfigNameAquiferRepoURL = "AquiferRepoURL"
+	ConfigNameGithubUsername = "GitHubUsername"
+	ConfigNameGithubAccessToken = "GitHubAccessToken"
+)
+
+// aquifer dir
+
 func hasAquiferDir() bool {
 	return len(Cfg.AquiferDir) != 0
 }
 
 func SetAquiferDir(aquiferDir string) error {
-	viper.Set("AquiferDir", aquiferDir)
+	viper.Set(ConfigNameAquiferDir, aquiferDir)
 
 	err := viper.WriteConfig()
 	if err != nil {
@@ -97,13 +106,15 @@ func SetAquiferDir(aquiferDir string) error {
 
 	return viper.Unmarshal(&Cfg)
 }
+
+// aquifer repo url
 
 func hasAquiferRepoURL() bool {
 	return len(Cfg.AquiferRepoURL) != 0
 }
 
 func SetAquiferRepoURL(aquiferRepoURL string) error {
-	viper.Set("AquiferRepoURL", aquiferRepoURL)
+	viper.Set(ConfigNameAquiferRepoURL, aquiferRepoURL)
 
 	err := viper.WriteConfig()
 	if err != nil {
@@ -112,13 +123,15 @@ func SetAquiferRepoURL(aquiferRepoURL string) error {
 
 	return viper.Unmarshal(&Cfg)
 }
+
+// github username
 
 func hasGitHubUsername() bool {
 	return len(Cfg.GitHubUsername) != 0
 }
 
 func SetGitHubUsername(githubUsername string) error {
-	viper.Set("GitHubUsername", githubUsername)
+	viper.Set(ConfigNameGithubUsername, githubUsername)
 
 	err := viper.WriteConfig()
 	if err != nil {
@@ -128,12 +141,14 @@ func SetGitHubUsername(githubUsername string) error {
 	return viper.Unmarshal(&Cfg)
 }
 
+// github access token
+
 func hasGitHubAccessToken() bool {
 	return len(Cfg.GitHubAccessToken) != 0
 }
 
 func SetGitHubAccessToken(githubAccessToken string) error {
-	viper.Set("GitHubAccessToken", githubAccessToken)
+	viper.Set(ConfigNameGithubAccessToken, githubAccessToken)
 
 	err := viper.WriteConfig()
 	if err != nil {

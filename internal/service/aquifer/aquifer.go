@@ -32,7 +32,7 @@ type Aquifer struct {
 	Uninstall map[string]Plan
 }
 
-func Install(pkgName string) error {
+func Install(aquiferDir, pkgName string) error {
 	err := config.SetCfgWithSurvey(
 		config.SetAquiferDirWithSurvey,
 	)
@@ -40,7 +40,7 @@ func Install(pkgName string) error {
 		return err
 	}
 
-	aquiferPath, err := getAquiferPath(config.Cfg.AquiferDir, pkgName)
+	aquiferPath, err := getAquiferPath(aquiferDir, pkgName)
 	if err != nil {
 		return err
 	}
