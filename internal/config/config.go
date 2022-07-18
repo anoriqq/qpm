@@ -63,8 +63,8 @@ func createIfNotExistConfigFile(configHome, configName, configType string) error
 var Cfg Config
 
 type Config struct {
-	ScriptDir         string
-	ScriptRepoURL     string
+	AquiferDir         string
+	AquiferRepoURL     string
 	GitHubUsername    string
 	GitHubAccessToken string
 }
@@ -83,12 +83,12 @@ func Load() error {
 	return nil
 }
 
-func hasScriptDir() bool {
-	return len(Cfg.ScriptDir) != 0
+func hasAquiferDir() bool {
+	return len(Cfg.AquiferDir) != 0
 }
 
-func SetScriptDir(scriptDir string) error {
-	viper.Set("ScriptDir", scriptDir)
+func SetAquiferDir(aquiferDir string) error {
+	viper.Set("AquiferDir", aquiferDir)
 
 	err := viper.WriteConfig()
 	if err != nil {
@@ -98,12 +98,12 @@ func SetScriptDir(scriptDir string) error {
 	return viper.Unmarshal(&Cfg)
 }
 
-func hasScriptRepoURL() bool {
-	return len(Cfg.ScriptRepoURL) != 0
+func hasAquiferRepoURL() bool {
+	return len(Cfg.AquiferRepoURL) != 0
 }
 
-func SetScriptRepoURL(scriptRepoURL string) error {
-	viper.Set("ScriptRepoURL", scriptRepoURL)
+func SetAquiferRepoURL(aquiferRepoURL string) error {
+	viper.Set("AquiferRepoURL", aquiferRepoURL)
 
 	err := viper.WriteConfig()
 	if err != nil {

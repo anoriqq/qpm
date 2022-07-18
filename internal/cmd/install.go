@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/anoriqq/qpm/internal/service/install"
+	"github.com/anoriqq/qpm/internal/service/aquifer"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +23,7 @@ func installRun(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	return install.Install(pkgName)
+	return aquifer.Install(pkgName)
 }
 
 func getPkgName(args []string) (string, error) {
