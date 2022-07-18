@@ -1,4 +1,4 @@
-package getscript
+package aquifer
 
 import (
 	"fmt"
@@ -10,10 +10,12 @@ import (
 	"github.com/anoriqq/qpm/internal/stdin"
 )
 
-func GetScript() error {
+var fileFmt = time.Now().Format("20060102150405")
+
+func Pull() error {
 	err := config.SetCfgWithSurvey(
-		config.SetScriptDirWithSurvey,
-		config.SetScriptRepoURLWithSurvey,
+		config.SetAquiferDirWithSurvey,
+		config.SetAquiferRepoURLWithSurvey,
 		config.SetGitHubUsernameWithSurvey,
 		config.SetGitHubAccessTokenWithSurvey,
 	)
@@ -21,12 +23,13 @@ func GetScript() error {
 		return err
 	}
 
-	err = stdin.SurveyDeleteScriptDir()
+	err = stdin.SurveyDeleteAquiferDir()
 	if err != nil {
 		return err
 	}
 
-	err = os.Rename(config.Cfg.ScriptDir, fmt.Sprintf("%s.old_%s", config.Cfg.ScriptDir, time.Now().Format("20060102150405")))
+	oldName := fmt.Sprintf("%s.old_%s", config.Cfg.AquiferDir, fileFmt)
+	err = os.Rename(config.Cfg.AquiferDir, oldName)
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
@@ -36,9 +39,9 @@ func GetScript() error {
 		return err
 	}
 
-	fmt.Println(config.Cfg.ScriptRepoURL)
+	fmt.Println(config.Cfg.AquiferRepoURL)
 
-	err = c.Clone(config.Cfg.ScriptDir, config.Cfg.ScriptRepoURL)
+	err = c.Clone(config.Cfg.AquiferDir, config.Cfg.AquiferRepoURL)
 	if err != nil {
 		return err
 	}

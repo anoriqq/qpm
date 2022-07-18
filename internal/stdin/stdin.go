@@ -9,24 +9,24 @@ import (
 	"github.com/anoriqq/qpm/internal/survey"
 )
 
-func SurveyScriptRepoURL() (*url.URL, error) {
-	msg := "Please enter qpm script repository full URL."
+func SurveyAquiferRepoURL() (*url.URL, error) {
+	msg := "Please enter qpm aquifer repository full URL."
 
-	rawScriptRepoURL, err := survey.AskOneInputRequired(msg, "")
+	rawAquiferRepoURL, err := survey.AskOneInputRequired(msg, "")
 	if err != nil {
 		return nil, err
 	}
 
-	scriptRepoURL, err := url.Parse(rawScriptRepoURL)
+	aquiferRepoURL, err := url.Parse(rawAquiferRepoURL)
 	if err != nil {
 		return nil, err
 	}
 
-	return scriptRepoURL, nil
+	return aquiferRepoURL, nil
 }
 
-func SurveyDeleteScriptDir() error {
-	msg := "Do you want to replace the script dir and continue?"
+func SurveyDeleteAquiferDir() error {
+	msg := "Do you want to replace the aquifer dir and continue?"
 
 	canDelete, err := survey.AskOneConfirm(msg, false)
 	if err != nil {
@@ -34,7 +34,7 @@ func SurveyDeleteScriptDir() error {
 	}
 
 	if !canDelete {
-		return errors.New("to clone the script repository, the script dir must be deleted")
+		return errors.New("to clone the aquifer repository, the aquifer dir must be deleted")
 	}
 
 	return nil
@@ -62,7 +62,7 @@ func SurveyGitHubAccessToken() (string, error) {
 	return githubAccessToken, nil
 }
 
-func SurveyScriptDir() (string, error) {
+func SurveyAquiferDir() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
@@ -70,12 +70,12 @@ func SurveyScriptDir() (string, error) {
 
 	def := filepath.Join(home, ".qpm")
 
-	msg := "Please enter qpm script path."
+	msg := "Please enter qpm aquifer path."
 
-	scriptDir, err := survey.AskOneInputRequired(msg, def)
+	aquiferDir, err := survey.AskOneInputRequired(msg, def)
 	if err != nil {
 		return "", err
 	}
 
-	return scriptDir, nil
+	return aquiferDir, nil
 }

@@ -10,8 +10,8 @@ import (
 var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "update config",
-	Example: `  # set ScriptDir to ~/.qpm
-  qpm config ScriptDir ~/.qpm`,
+	Example: `  # set AquiferDir to ~/.qpm
+  qpm config AquiferDir ~/.qpm`,
 	RunE: configRun,
 }
 

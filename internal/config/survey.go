@@ -15,17 +15,17 @@ func SetCfgWithSurvey(setters ...func() error) error {
 	return nil
 }
 
-func SetScriptDirWithSurvey() error {
-	if hasScriptDir() {
+func SetAquiferDirWithSurvey() error {
+	if hasAquiferDir() {
 		return nil
 	}
 
-	scriptDir, err := stdin.SurveyScriptDir()
+	aquiferDir, err := stdin.SurveyAquiferDir()
 	if err != nil {
 		return err
 	}
 
-	err = SetScriptDir(scriptDir)
+	err = SetAquiferDir(aquiferDir)
 	if err != nil {
 		return err
 	}
@@ -33,17 +33,17 @@ func SetScriptDirWithSurvey() error {
 	return nil
 }
 
-func SetScriptRepoURLWithSurvey() error {
-	if hasScriptRepoURL() {
+func SetAquiferRepoURLWithSurvey() error {
+	if hasAquiferRepoURL() {
 		return nil
 	}
 
-	scriptRepoURL, err := stdin.SurveyScriptRepoURL()
+	aquiferRepoURL, err := stdin.SurveyAquiferRepoURL()
 	if err != nil {
 		return err
 	}
 
-	err = SetScriptRepoURL(scriptRepoURL.String())
+	err = SetAquiferRepoURL(aquiferRepoURL.String())
 	if err != nil {
 		return err
 	}

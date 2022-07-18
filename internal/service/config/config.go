@@ -20,11 +20,11 @@ func PrintConfig() {
 
 func SetConfig(configField, configValue string) error {
 	switch strings.ToLower(configField) {
-	case "scriptdir":
-		config.SetScriptDir(configValue)
+	case "aquiferdir":
+		config.SetAquiferDir(configValue)
 		return nil
-	case "scriptrepourl":
-		config.SetScriptRepoURL(configValue)
+	case "aquiferrepourl":
+		config.SetAquiferRepoURL(configValue)
 		return nil
 	case "githubusername":
 		config.SetGitHubUsername(configValue)
