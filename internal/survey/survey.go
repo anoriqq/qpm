@@ -5,7 +5,7 @@ import "github.com/AlecAivazis/survey/v2"
 func AskOneInputRequired(msg, def string) (string, error) {
 	var result string
 
-	p := &survey.Input{ Message: msg, Default: def }
+	p := &survey.Input{Message: msg, Default: def}
 
 	err := survey.AskOne(p, &result, survey.WithValidator(survey.Required))
 	if err != nil {
@@ -18,7 +18,7 @@ func AskOneInputRequired(msg, def string) (string, error) {
 func AskOneConfirm(msg string, def bool) (bool, error) {
 	var result bool
 
-	p := &survey.Confirm{ Message: msg, Default: def }
+	p := &survey.Confirm{Message: msg, Default: def}
 
 	err := survey.AskOne(p, &result)
 	if err != nil {
@@ -31,7 +31,7 @@ func AskOneConfirm(msg string, def bool) (bool, error) {
 func AskOnePasswordRequired(msg string) (string, error) {
 	var result string
 
-	p := &survey.Password{ Message: msg }
+	p := &survey.Password{Message: msg}
 
 	err := survey.AskOne(p, &result, survey.WithValidator(survey.Required))
 	if err != nil {
