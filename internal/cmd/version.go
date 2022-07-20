@@ -16,7 +16,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 }
 
-const version = "v0.0.3"
+const version = "v0.0.6"
 
 func versionRun(_ *cobra.Command, _ []string) error {
 	fmt.Println(version)
