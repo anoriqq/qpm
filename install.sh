@@ -3,16 +3,21 @@
 set -au
 
 get_qpm_download_url() {
-  curl -sSL 'https://api.github.com/repos/anoriqq/qpm/releases/latest' | jq -r '.assets[].browser_download_url' | grep linux_amd64
+  local os_arch="$1"
+
+  curl -sSL 'https://api.github.com/repos/anoriqq/qpm/releases/latest' | jq -r '.assets[].browser_download_url' | grep "$os_arch" | head -n 1
 }
 
-linux() {
+install() {
+  local os_arch="$1"
+
   # Get qpm download URL
   NEXT_WAIT_TIME=0
-  until QPM_DOWNLOAD_URL=$(get_qpm_download_url) || [ $NEXT_WAIT_TIME -eq 8 ]; do
+  until QPM_DOWNLOAD_URL=$(get_qpm_download_url "$os_arch") || [ $NEXT_WAIT_TIME -eq 8 ]; do
     echo $NEXT_WAIT_TIME
     sleep $(( NEXT_WAIT_TIME++ ))
   done
+  echo "QPM_DOWNLOAD_URL: $QPM_DOWNLOAD_URL"
 
   # Create tmp dir
   mkdir ./tmp.qpm
@@ -30,7 +35,9 @@ linux() {
   /usr/local/bin/qpm version
 }
 
-if [ "$(uname)" = "Linux" ]; then
-  linux
-fi
+case "$(uname)" in
+  Linux*) install "linux_$(uname -m)" ;;
+  Darwin*) install "darwin_$(uname -m)" ;;
+  *) echo "Unsupported OS" ;;
+esac
 
