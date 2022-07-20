@@ -19,7 +19,7 @@ import (
 const (
 	envOS   = "QPM_OS"
 	envArch = "QPM_ARCH"
-	envEnv = "QPM_ENV"
+	envEnv  = "QPM_ENV"
 )
 
 var headerOutput = color.New(color.FgHiCyan).Add(color.Bold)
@@ -107,6 +107,7 @@ func getPlan(aquifer Aquifer, os string) (Plan, error) {
 }
 
 type envMap map[string]string
+
 func (e envMap) ToEnvSlice() []string {
 	result := make([]string, len(e))
 
@@ -137,8 +138,8 @@ func installAquifer(plan Plan) (err error) {
 
 	envs := envMap{
 		envArch: runtime.GOARCH,
-		envOS: runtime.GOOS,
-		envEnv: envFilePath,
+		envOS:   runtime.GOOS,
+		envEnv:  envFilePath,
 	}
 
 	for i, v := range plan.Run {

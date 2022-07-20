@@ -63,8 +63,8 @@ func createIfNotExistConfigFile(configHome, configName, configType string) error
 var Cfg Config
 
 type Config struct {
-	AquiferDir         string
-	AquiferRepoURL     string
+	AquiferDir        string
+	AquiferRepoURL    string
 	GitHubUsername    string
 	GitHubAccessToken string
 }
@@ -84,9 +84,9 @@ func Load() error {
 }
 
 const (
-	ConfigNameAquiferDir = "AquiferDir"
-	ConfigNameAquiferRepoURL = "AquiferRepoURL"
-	ConfigNameGithubUsername = "GitHubUsername"
+	ConfigNameAquiferDir        = "AquiferDir"
+	ConfigNameAquiferRepoURL    = "AquiferRepoURL"
+	ConfigNameGithubUsername    = "GitHubUsername"
 	ConfigNameGithubAccessToken = "GitHubAccessToken"
 )
 
