@@ -22,7 +22,10 @@ const (
 	envEnv  = "QPM_ENV"
 )
 
-var headerOutput = color.New(color.FgHiCyan).Add(color.Bold)
+var (
+	headerOutput = color.New(color.FgHiCyan).Add(color.Bold)
+	errorOutput  = color.New(color.FgHiRed)
+)
 
 type Plan struct {
 	Dependencies []string
@@ -123,7 +126,7 @@ func (e envMap) Append(key, val string) {
 	e[key] = val
 }
 
-func installAquifer(plan Plan) (err error) {
+func installAquifer(plan Plan) error {
 	envFilePath := path.Join(config.Cfg.AquiferDir, "tmp.env")
 
 	f, err := os.Create(envFilePath)
@@ -131,10 +134,8 @@ func installAquifer(plan Plan) (err error) {
 		return err
 	}
 
-	defer func() {
-		f.Close()
-		err = os.Remove(envFilePath)
-	}()
+	defer f.Close()
+	defer os.Remove(envFilePath)
 
 	envs := envMap{
 		envArch: runtime.GOARCH,
@@ -170,7 +171,7 @@ func installAquifer(plan Plan) (err error) {
 		err = c.Run()
 		if err != nil {
 			fmt.Printf("%v", stdout.String())
-			fmt.Printf("%v", stderr.String())
+			errorOutput.Printf("[error] %v", stderr.String())
 			return err
 		}
 
