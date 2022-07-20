@@ -1,12 +1,15 @@
 package aquifer
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/anoriqq/qpm/internal/config"
 	"github.com/fatih/color"
@@ -16,6 +19,7 @@ import (
 const (
 	envOS   = "QPM_OS"
 	envArch = "QPM_ARCH"
+	envEnv = "QPM_ENV"
 )
 
 var headerOutput = color.New(color.FgHiCyan).Add(color.Bold)
@@ -96,29 +100,83 @@ func getAquifer(aquiferPath string) (Aquifer, error) {
 func getPlan(aquifer Aquifer, os string) (Plan, error) {
 	plan, ok := aquifer.Install[os]
 	if !ok {
-		return Plan{}, fmt.Errorf("not declared os: %s", runtime.GOOS)
+		return Plan{}, fmt.Errorf("not declared os: %s", os)
 	}
 
 	return plan, nil
 }
 
-func installAquifer(plan Plan) error {
+type envMap map[string]string
+func (e envMap) ToEnvSlice() []string {
+	result := make([]string, len(e))
+
+	var i int
+	for k, v := range e {
+		result[i] = fmt.Sprintf("%s=%s", k, v)
+		i++
+	}
+
+	return result
+}
+func (e envMap) Append(key, val string) {
+	e[key] = val
+}
+
+func installAquifer(plan Plan) (err error) {
+	envFilePath := path.Join(config.Cfg.AquiferDir, "tmp.env")
+
+	f, err := os.Create(envFilePath)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		f.Close()
+		err = os.Remove(envFilePath)
+	}()
+
+	envs := envMap{
+		envArch: runtime.GOARCH,
+		envOS: runtime.GOOS,
+		envEnv: envFilePath,
+	}
+
 	for i, v := range plan.Run {
-		headerOutput.Printf("[%d] %s\n", i+1, v)
+		headerOutput.Printf("[%d/%d] %s\n", i+1, len(plan.Run), v)
 
 		c := exec.Command("bash", "-c", v)
-		c.Env = append(c.Env,
-			fmt.Sprintf("%s=%s", envOS, runtime.GOARCH),
-			fmt.Sprintf("%s=%s", envArch, runtime.GOOS),
-		)
 
-		output, err := c.Output()
+		c.Dir = config.Cfg.AquiferDir
+
+		envFileBytes, err := io.ReadAll(f)
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("%v", string(output))
+		envStrings := strings.Split(string(envFileBytes), "\n")
+		for _, v := range envStrings {
+			keyval := strings.Split(v, "=")
+			if len(keyval) == 2 {
+				envs.Append(keyval[0], keyval[1])
+			}
+		}
+
+		c.Env = append(c.Env, envs.ToEnvSlice()...)
+
+		var stdout, stderr bytes.Buffer
+		c.Stdout, c.Stderr = &stdout, &stderr
+
+		err = c.Run()
+		if err != nil {
+			fmt.Printf("%v", stdout.String())
+			fmt.Printf("%v", stderr.String())
+			return err
+		}
+
+		fmt.Printf("%v", stdout.String())
 	}
+
+	headerOutput.Println("[complete]")
 
 	return nil
 }
