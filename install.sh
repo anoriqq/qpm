@@ -36,7 +36,7 @@ install() {
 }
 
 case "$(uname)" in
-  Linux*) install "linux_$(uname -m)" ;;
+  Linux*) install "linux_amd64" ;;
   Darwin*) install "darwin_$(uname -m)" ;;
   *) echo "Unsupported OS" ;;
 esac
