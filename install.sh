@@ -3,17 +3,18 @@
 set -au
 
 get_qpm_download_url() {
-  local os_arch="$1"
+  local OS_ARCH="$1"
 
-  curl -sSL 'https://api.github.com/repos/anoriqq/qpm/releases/latest' | jq -r '.assets[].browser_download_url' | grep "$os_arch" | head -n 1
+  curl -sSL 'https://api.github.com/repos/anoriqq/qpm/releases/latest' | jq -r '.assets[].browser_download_url' | grep "$OS_ARCH" | head -n 1
 }
 
 install() {
-  local os_arch="$1"
+  local OS_ARCH="$1"
+  echo "OS_ARCH: $OS_ARCH"
 
   # Get qpm download URL
-  NEXT_WAIT_TIME=0
-  until QPM_DOWNLOAD_URL=$(get_qpm_download_url "$os_arch") || [ $NEXT_WAIT_TIME -eq 8 ]; do
+  NEXT_WAIT_TIME=1
+  until QPM_DOWNLOAD_URL=$(get_qpm_download_url "$OS_ARCH") || [ $NEXT_WAIT_TIME -eq 8 ]; do
     echo $NEXT_WAIT_TIME
     sleep $(( NEXT_WAIT_TIME++ ))
   done
@@ -35,9 +36,21 @@ install() {
   /usr/local/bin/qpm version
 }
 
-case "$(uname)" in
-  Linux*) install "linux_amd64" ;;
-  Darwin*) install "darwin_$(uname -m)" ;;
-  *) echo "Unsupported OS" ;;
-esac
+main() {
+  echo "uname -a: $(uname -a)"
+
+  ARCH=""
+  case "$(uname -m)" in
+    arm64) ARCH="arm64" ;;
+    *) ARCH="amd64" ;;
+  esac
+
+  case "$(uname)" in
+    Linux*) install "linux_${ARCH}" ;;
+    Darwin*) install "darwin_${ARCH}" ;;
+    *) echo "Unsupported OS" ;;
+  esac
+}
+
+main
 
