@@ -5,7 +5,17 @@ set -au
 get_qpm_download_url() {
   local OS_ARCH="$1"
 
-  curl -sSL 'https://api.github.com/repos/anoriqq/qpm/releases/latest' | jq -r '.assets[].browser_download_url' | grep "$OS_ARCH" | head -n 1
+  if [ "${CI:-}" = "true" ]; then
+    curl -sSL https://api.github.com/repos/anoriqq/qpm/releases/latest \
+      | jq -r '.assets[].browser_download_url' \
+      | grep "$OS_ARCH" \
+      | head -n 1
+  else
+    curl -sSL -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/anoriqq/qpm/releases/latest \
+      | jq -r '.assets[].browser_download_url' \
+      | grep "$OS_ARCH" \
+      | head -n 1
+  fi
 }
 
 install() {
@@ -13,12 +23,16 @@ install() {
   echo "OS_ARCH: $OS_ARCH"
 
   # Get qpm download URL
-  NEXT_WAIT_TIME=1
-  until QPM_DOWNLOAD_URL=$(get_qpm_download_url "$OS_ARCH") || [ $NEXT_WAIT_TIME -eq 8 ]; do
+  local NEXT_WAIT_TIME=1
+  until QPM_DOWNLOAD_URL=$(get_qpm_download_url "$OS_ARCH") || [ "$NEXT_WAIT_TIME" -gt 10 ]; do
     echo $NEXT_WAIT_TIME
-    sleep $(( NEXT_WAIT_TIME++ ))
+    sleep $(( NEXT_WAIT_TIME ))
+    NEXT_WAIT_TIME=$(( NEXT_WAIT_TIME * 2 ))
   done
   echo "QPM_DOWNLOAD_URL: $QPM_DOWNLOAD_URL"
+  if [ "$QPM_DOWNLOAD_URL" = "" ]; then
+    exit 1
+  fi
 
   # Create tmp dir
   mkdir ./tmp.qpm
