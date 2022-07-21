@@ -2,12 +2,14 @@ name: release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
 
 jobs:
   release:
-    if: endsWith(github.ref, 'main')
+    if: ${{ github.ref_type == 'tag' && github.event.base_ref=='refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
 
