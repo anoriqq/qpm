@@ -5,17 +5,12 @@ set -au
 get_qpm_download_url() {
   local OS_ARCH="$1"
 
-  if [ "${CI:-}" = "true" ]; then
-    curl -sSL https://api.github.com/repos/anoriqq/qpm/releases/latest \
-      | jq -r '.assets[].browser_download_url' \
-      | grep "$OS_ARCH" \
-      | head -n 1
-  else
-    curl -sSL -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/anoriqq/qpm/releases/latest \
-      | jq -r '.assets[].browser_download_url' \
-      | grep "$OS_ARCH" \
-      | head -n 1
-  fi
+  curl -sSL --url https://api.github.com/repos/anoriqq/qpm/releases/latest \
+    -u ':${{ secrets.GITHUB_TOKEN }}' \
+    -H 'content-type: application/json' \
+    | jq -r '.assets[].browser_download_url' \
+    | grep "$OS_ARCH" \
+    | head -n 1
 }
 
 install() {
