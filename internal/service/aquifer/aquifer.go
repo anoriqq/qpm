@@ -163,6 +163,7 @@ func installAquifer(plan Plan) error {
 			}
 		}
 
+		c.Env = os.Environ()
 		c.Env = append(c.Env, envs.ToEnvSlice()...)
 
 		var stdout, stderr bytes.Buffer
