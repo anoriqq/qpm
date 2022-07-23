@@ -3,8 +3,14 @@
 
 ## Installation
 ```sh
+# Using go
 go install github.com/anoriqq/qpm@latest
+
+# Using sh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/anoriqq/qpm/main/install)"
 ```
+
+If needed, you can download binaries from [the releases page](https://github.com/anoriqq/qpm/releases).
 
 ## Usage
 ```txt
