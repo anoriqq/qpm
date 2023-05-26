@@ -226,6 +226,7 @@ func Execute(c Config, s stratum, action Action) error {
 	for i, r := range j.steps {
 		io.WriteString(stdin, fmt.Sprintf(`echo "\e[96m[%d/%d] %s\e[m"`+"\n", i+1, len(j.steps), shellEscapeReplacer.Replace(r.name)))
 		io.WriteString(stdin, fmt.Sprintln(r.run))
+		io.WriteString(stdin, fmt.Sprintln(`if [ "$?" != 0 ]; then exit 1; fi`))
 	}
 	io.WriteString(stdin, fmt.Sprintln("echo '\\e[96m[Complete]\\e[m'"))
 
