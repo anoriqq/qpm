@@ -6,11 +6,12 @@ get_qpm_download_url() {
   local OS_ARCH="$1"
 
   curl -sSL --url https://api.github.com/repos/anoriqq/qpm/releases/latest \
+    -H "Accept: application/vnd.github+json" \
     -u ':${{ secrets.GITHUB_TOKEN }}' \
-    -H 'content-type: application/json' \
-    | jq -r '.assets[].browser_download_url' \
-    | grep "$OS_ARCH" \
-    | head -n 1
+    | grep browser_download_url \
+    | grep linux_arm64 \
+    | sed -E 's/"//g' \
+    | sed -E 's/.* //'
 }
 
 install() {

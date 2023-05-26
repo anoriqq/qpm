@@ -28,12 +28,12 @@ func AskOneConfirm(msg string, def bool) (bool, error) {
 	return result, nil
 }
 
-func AskOnePasswordRequired(msg string) (string, error) {
+func AskOnePassword(msg string) (string, error) {
 	var result string
 
 	p := &survey.Password{Message: msg}
 
-	err := survey.AskOne(p, &result, survey.WithValidator(survey.Required))
+	err := survey.AskOne(p, &result)
 	if err != nil {
 		return "", err
 	}

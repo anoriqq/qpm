@@ -9,9 +9,9 @@ import (
 )
 
 type client struct {
+	repo        *git.Repository
 	username    string
 	accessToken string
-	repo        *git.Repository
 }
 
 func (c *client) Clone(path, url string) error {

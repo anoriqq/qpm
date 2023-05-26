@@ -1,0 +1,14 @@
+install:
+  - os: [linux, darwin]
+    dependencies: [echo]
+    steps:
+      - name: Step 1
+        run: echo install for unix
+      - sleep 2
+      - echo install for unix
+
+uninstall:
+  - os: [linux, darwin]
+    dependencies: [echo]
+    steps:
+      - echo uninstall for unix
