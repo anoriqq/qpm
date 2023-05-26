@@ -9,7 +9,7 @@ get_qpm_download_url() {
     -H "Accept: application/vnd.github+json" \
     -u ':${{ secrets.GITHUB_TOKEN }}' \
     | grep browser_download_url \
-    | grep linux_arm64 \
+    | grep $OS_ARCH \
     | sed -E 's/"//g' \
     | sed -E 's/.* //'
 }
@@ -43,7 +43,7 @@ install() {
   rm -rf ./tmp.qpm
 
   # Show qpm version
-  /usr/local/bin/qpm version
+  /usr/local/bin/qpm -v
 }
 
 main() {
