@@ -14,23 +14,25 @@ If needed, you can download binaries from [the releases page](https://github.com
 
 ## Usage
 ```txt
-qpm
+Qanat Package Manager
 
 Usage:
   qpm [command]
 
 Available Commands:
-  aquifer     manage aquifer
+  aquifer     Manage aquifer
   completion  Generate the autocompletion script for the specified shell
-  config      update config
+  config      Manage qpm config
   help        Help about any command
-  install     install packages
-  version     show version info
+  install     Install specifc package
+  uninstall   Unnstall specifc package
 
 Flags:
-  -h, --help   help for qpm
+  -h, --help      help for qpm
+  -v, --version   version for qpm
 
 Use "qpm [command] --help" for more information about a command.
+
 ```
 
 ## Aquifer
@@ -39,9 +41,7 @@ It has the following directory structure.
 
 ```txt
 .
-└── pkgname
-    ├── v1.18.yml
-    └── latest.yml
+└── pkgName.yml
 ```
 
-Please refer to [the template](https://github.com/anoriqq/qpm/blob/b600c503f98c4d68ac0428dc03e36505988c2826/template/pkgname/latest.yml) for the yml file.
+Please refer to [the template](https://github.com/anoriqq/qpm/blob/6408dc7/testdata/foo.yml) for the yml file.
