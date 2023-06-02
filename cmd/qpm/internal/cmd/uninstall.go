@@ -14,7 +14,7 @@ func init() {
 
 	uninstallCmd := &cobra.Command{
 		Use:   "uninstall",
-		Short: "Unnstall specifc package",
+		Short: "Uninstall specific package",
 		Example: `  # Uninstall foo package
   qpm uninstall foo`,
 		Args: cobra.RangeArgs(1, 2),

@@ -16,7 +16,7 @@ func init() {
 
 	installCmd := &cobra.Command{
 		Use:   "install",
-		Short: "Install specifc package",
+		Short: "Install specific package",
 		Example: `  # Install foo package
   qpm install foo`,
 		Args: cobra.RangeArgs(1, 2),

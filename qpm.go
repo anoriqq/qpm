@@ -151,7 +151,7 @@ func ReadStratum(c Config, name string) (stratum, error) {
 
 				slices.Sort(j.Dependencies)
 				if len(slices.Compact(j.Dependencies)) != len(j.Dependencies) {
-					return stratum{}, errors.New("deplicate packages in dependencies")
+					return stratum{}, errors.New("duplicate packages in dependencies")
 				}
 
 				steps := make([]step, 0)

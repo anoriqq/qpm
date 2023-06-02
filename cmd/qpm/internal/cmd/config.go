@@ -77,7 +77,7 @@ func init() {
 		},
 	}
 
-	configCmd.Flags().BoolVarP(&isInit, "init", "i", false, "Interalcive inisialization")
+	configCmd.Flags().BoolVarP(&isInit, "init", "i", false, "Interactive initialisation")
 	configCmd.Flags().BoolVarP(&isClear, "clear", "", false, "Clear config file")
 	rootCmd.AddCommand(configCmd)
 }
@@ -136,7 +136,7 @@ func SurveyGitHubUsername(current *string) (string, error) {
 }
 
 func SurveyGitHubToken(current *string) (string, error) {
-	msg := "Please enter GitHub access token. If nothing is enterd, the current config will be taken over."
+	msg := "Please enter GitHub access token. If nothing is entered, the current config will be taken over."
 
 	v, err := survey.AskOnePassword(msg)
 	if err != nil {
