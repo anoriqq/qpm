@@ -1,7 +1,6 @@
 package qpm
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"io"
@@ -223,7 +222,7 @@ func IsAlreadyInstalled(s stratum) (bool, error) {
 }
 
 // Execute aquiferを実行する。
-func Execute(c Config, s stratum, action Action) error {
+func Execute(c Config, s stratum, action Action, stdout, stderr io.Writer) error {
 	cmd := exec.Command(c.Shell)
 
 	cmd.Env = append(cmd.Environ(),
@@ -231,8 +230,7 @@ func Execute(c Config, s stratum, action Action) error {
 		fmt.Sprintf("QPM_ARCH=%s", runtime.GOARCH),
 	)
 
-	cmd.Stdout = bufio.NewWriter(os.Stdout)
-	cmd.Stderr = bufio.NewWriter(os.Stderr)
+	cmd.Stdout, cmd.Stderr = stdout, stderr
 
 	a, ok := s.Plan[action]
 	if !ok {

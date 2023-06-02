@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"bufio"
+	"os"
+
 	"github.com/anoriqq/qpm"
 	"github.com/anoriqq/qpm/cmd/qpm/internal/config"
 	"github.com/spf13/cobra"
@@ -35,7 +38,7 @@ func init() {
 				return err
 			}
 
-			return qpm.Execute(c, s, qpm.Uninstall)
+			return qpm.Execute(c, s, qpm.Uninstall, bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
 		},
 	}
 

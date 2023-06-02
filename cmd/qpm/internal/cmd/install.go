@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
 	"github.com/anoriqq/qpm"
 	"github.com/anoriqq/qpm/cmd/qpm/internal/config"
@@ -53,7 +55,7 @@ func init() {
 				}
 			}
 
-			return qpm.Execute(c, s, qpm.Install)
+			return qpm.Execute(c, s, qpm.Install, bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
 		},
 	}
 
