@@ -3,7 +3,7 @@ module github.com/anoriqq/qpm
 go 1.19
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.6
+	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/go-git/go-git/v5 v5.7.0
 	github.com/goccy/go-yaml v1.11.0
 	github.com/google/go-cmp v0.5.9
