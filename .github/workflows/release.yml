@@ -30,6 +30,7 @@ jobs:
           workdir: ./cmd/qpm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CGO_ENABLED: 0
 
       - name: Upload assets
         uses: actions/upload-artifact@v3
