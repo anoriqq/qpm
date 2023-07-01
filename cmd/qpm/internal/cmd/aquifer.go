@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/anoriqq/qpm"
 	"github.com/anoriqq/qpm/cmd/qpm/internal/config"
 	"github.com/anoriqq/qpm/cmd/qpm/internal/git"
 	"github.com/spf13/cobra"
@@ -20,6 +21,8 @@ var aquiferCmd = &cobra.Command{
 }
 
 func init() {
+	var aquiferPath string
+
 	aquiferPullCmd := &cobra.Command{
 		Use:   "pull",
 		Short: "Get aquifer form remote repository",
@@ -34,8 +37,14 @@ func init() {
 				return err
 			}
 
-			oldDir := fmt.Sprintf("%s.old_%s", c.AquiferPath, time.Now().Format("20060102150405"))
-			if err := os.Rename(c.AquiferPath, oldDir); err != nil && !os.IsNotExist(err) {
+			if aquiferPath != "" {
+				c.AquiferPath = aquiferPath
+			}
+
+			aquiferPath := os.ExpandEnv(c.AquiferPath)
+
+			oldDir := fmt.Sprintf("%s.old_%s", aquiferPath, time.Now().Format("20060102150405"))
+			if err := os.Rename(aquiferPath, oldDir); err != nil && !os.IsNotExist(err) {
 				return err
 			}
 
@@ -44,7 +53,7 @@ func init() {
 				return err
 			}
 
-			if err = cl.Clone(c.AquiferPath, c.AquiferRemote.String()); err != nil {
+			if err = cl.Clone(aquiferPath, c.AquiferRemote.String()); err != nil {
 				return err
 			}
 
@@ -52,5 +61,34 @@ func init() {
 		},
 	}
 
+	aquiferValidateCmd := &cobra.Command{
+		Use:   "validate",
+		Short: "validate specific stratum of aquifer",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(_ *cobra.Command, args []string) error {
+			path, err := config.InitConfigFile()
+			if err != nil {
+				return err
+			}
+
+			c, err := config.ReadConfig(path)
+			if err != nil {
+				return err
+			}
+
+			if aquiferPath != "" {
+				c.AquiferPath = aquiferPath
+			}
+
+			if _, err := qpm.ReadStratum(c, args[0]); err != nil {
+				return err
+			}
+
+			return nil
+		},
+	}
+
+	aquiferCmd.PersistentFlags().StringVarP(&aquiferPath, "aquifer", "a", "", "Aquifer directory path")
 	aquiferCmd.AddCommand(aquiferPullCmd)
+	aquiferCmd.AddCommand(aquiferValidateCmd)
 }

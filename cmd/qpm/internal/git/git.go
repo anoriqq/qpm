@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-git/go-git/v5"
-	ghttp "github.com/go-git/go-git/v5/plumbing/transport/http"
+	gHTTP "github.com/go-git/go-git/v5/plumbing/transport/http"
 )
 
 type client struct {
@@ -17,7 +17,7 @@ type client struct {
 func (c *client) Clone(path, url string) error {
 	o := &git.CloneOptions{
 		URL: url,
-		Auth: &ghttp.BasicAuth{
+		Auth: &gHTTP.BasicAuth{
 			Username: c.username,
 			Password: c.accessToken,
 		},

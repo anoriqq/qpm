@@ -1,7 +1,9 @@
 package qpm
 
 import (
+	"bufio"
 	"net/url"
+	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -34,7 +36,7 @@ func TestQPM_Execute(t *testing.T) {
 		Shell:         "zsh",
 	}
 
-	err := Execute(c, stratum{}, "")
+	err := Execute(c, stratum{}, "", bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
 	if err != nil {
 		t.Fatal(err)
 	}
