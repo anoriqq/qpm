@@ -9,7 +9,7 @@ require (
 	github.com/google/go-cmp v0.5.9
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.7.0
-	golang.org/x/exp v0.0.0-20230725012225-302865e7556b
+	golang.org/x/exp v0.0.0-20230725092541-5dae85eda59e
 )
 
 require (
