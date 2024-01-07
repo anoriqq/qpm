@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/goccy/go-yaml"
 	"github.com/pkg/errors"
 	"golang.org/x/exp/slices"
@@ -256,16 +257,15 @@ func Execute(c Config, s stratum, action Action, stdout, stderr io.Writer) error
 		return err
 	}
 
-	fmt.Fprintf(stdin, "echo '\\e[33m%s %s by %s\\e[m'\n", action, s.Name, shell)
+	header := fmt.Sprintf("=> %s %s by %s", strings.ToUpper(string(action[0]))+string(action)[1:], s.Name, shell)
+	echo(stdin, color.FgYellow, header)
 	for i, r := range j.step {
-		io.WriteString(
-			stdin,
-			fmt.Sprintf(`echo "\e[96m[%d/%d] %s\e[m"`+"\n", i+1, len(j.step), shellEscapeReplacer.Replace(r.name)),
-		)
-		io.WriteString(stdin, fmt.Sprintln(r.run))
-		io.WriteString(stdin, fmt.Sprintln(`if [ "$?" != 0 ]; then exit 1; fi`))
+		title := fmt.Sprintf("[%d/%d] %s", i+1, len(j.step), shellEscapeReplacer.Replace(r.name))
+		echo(stdin, color.FgCyan, title)
+		fmt.Fprintln(stdin, r.run)
+		fmt.Fprintln(stdin, `if [ "$?" != 0 ]; then exit 1; fi`)
 	}
-	io.WriteString(stdin, fmt.Sprintln("echo '\\e[96m[Complete]\\e[m'"))
+	echo(stdin, color.FgYellow, "=> Complete")
 
 	if err := cmd.Start(); err != nil {
 		return err
@@ -278,4 +278,9 @@ func Execute(c Config, s stratum, action Action, stdout, stderr io.Writer) error
 	}
 
 	return nil
+}
+
+func echo(w io.Writer, att color.Attribute, s string) {
+	str := color.New(att).Sprint(s)
+	fmt.Fprintf(w, "echo '%s'\n", str)
 }
