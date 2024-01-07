@@ -57,7 +57,9 @@ func init() {
 			}
 
 			cfg := c
-			cfg.Shell = []string{shell}
+			if shell != "" {
+				cfg.Shell = []string{shell}
+			}
 
 			return qpm.Execute(cfg, s, qpm.Install, bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
 		},
