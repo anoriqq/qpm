@@ -11,6 +11,7 @@ import (
 
 func init() {
 	var aquiferPath string
+	var shell string
 
 	uninstallCmd := &cobra.Command{
 		Use:   "uninstall",
@@ -38,10 +39,14 @@ func init() {
 				return err
 			}
 
-			return qpm.Execute(c, s, qpm.Uninstall, bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
+			cfg := c
+			cfg.Shell = []string{shell}
+
+			return qpm.Execute(cfg, s, qpm.Uninstall, bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
 		},
 	}
 
 	uninstallCmd.PersistentFlags().StringVarP(&aquiferPath, "aquifer", "a", "", "Aquifer directory path")
+	uninstallCmd.PersistentFlags().StringVarP(&shell, "shell", "s", "", "Shell")
 	rootCmd.AddCommand(uninstallCmd)
 }

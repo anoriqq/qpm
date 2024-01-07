@@ -13,6 +13,7 @@ import (
 
 func init() {
 	var aquiferPath string
+	var shell string
 
 	installCmd := &cobra.Command{
 		Use:   "install",
@@ -55,11 +56,15 @@ func init() {
 				}
 			}
 
-			return qpm.Execute(c, s, qpm.Install, bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
+			cfg := c
+			cfg.Shell = []string{shell}
+
+			return qpm.Execute(cfg, s, qpm.Install, bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
 		},
 	}
 
 	installCmd.PersistentFlags().StringVarP(&aquiferPath, "aquifer", "a", "", "Aquifer directory path")
+	installCmd.PersistentFlags().StringVarP(&shell, "shell", "s", "", "Shell")
 	rootCmd.AddCommand(installCmd)
 }
 
