@@ -18,7 +18,7 @@ import (
 )
 
 func Version() string {
-	return "v3.0.0"
+	return "v4.0.0"
 }
 
 type Config struct {
