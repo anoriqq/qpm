@@ -27,7 +27,7 @@ type Config struct {
 	GitHubUsername string
 	GitHubToken    string
 
-	Shell string
+	Shell []string
 }
 
 // PullAquifer AquiferをRemoteから取得する。
@@ -75,14 +75,6 @@ func parseOS(v string) (OS, error) {
 }
 
 type (
-	step struct {
-		name string
-		run  string
-	}
-	job struct {
-		dependencies []string
-		steps        []step
-	}
 	osToJob map[OS]job
 	plan    map[Action]osToJob
 	stratum struct {
@@ -119,9 +111,10 @@ func ReadStratum(c Config, name string) (stratum, error) {
 	}
 
 	var ay map[string][]struct {
-		OS           []string
-		Dependencies []string
-		Steps        []any
+		OS         []string
+		Shell      []string
+		Dependency []string
+		Step       []any
 	}
 	if err := yaml.Unmarshal(b, &ay); err != nil {
 		fmt.Println(yaml.FormatError(err, true, true))
@@ -149,13 +142,13 @@ func ReadStratum(c Config, name string) (stratum, error) {
 					return stratum{}, err
 				}
 
-				slices.Sort(j.Dependencies)
-				if len(slices.Compact(j.Dependencies)) != len(j.Dependencies) {
+				slices.Sort(j.Dependency)
+				if len(slices.Compact(j.Dependency)) != len(j.Dependency) {
 					return stratum{}, errors.New("duplicate packages in dependencies")
 				}
 
 				steps := make([]step, 0)
-				for i, s := range j.Steps {
+				for i, s := range j.Step {
 					switch v := s.(type) {
 					case string:
 						steps = append(steps, step{
@@ -190,9 +183,15 @@ func ReadStratum(c Config, name string) (stratum, error) {
 					}
 				}
 
+				shell := make(map[string]struct{}, len(j.Shell))
+				for _, s := range j.Shell {
+					shell[s] = struct{}{}
+				}
+
 				s.Plan[action][os] = job{
-					dependencies: j.Dependencies,
-					steps:        steps,
+					dependency:     j.Dependency,
+					availableShell: shell,
+					step:           steps,
 				}
 			}
 		}
@@ -223,15 +222,6 @@ func IsAlreadyInstalled(s stratum) (bool, error) {
 
 // Execute aquiferを実行する。
 func Execute(c Config, s stratum, action Action, stdout, stderr io.Writer) error {
-	cmd := exec.Command(c.Shell)
-
-	cmd.Env = append(cmd.Environ(),
-		fmt.Sprintf("QPM_OS=%s", runtime.GOOS),
-		fmt.Sprintf("QPM_ARCH=%s", runtime.GOARCH),
-	)
-
-	cmd.Stdout, cmd.Stderr = stdout, stderr
-
 	a, ok := s.Plan[action]
 	if !ok {
 		return errors.Errorf("%s is an Action not defined in the stratum", action)
@@ -247,13 +237,31 @@ func Execute(c Config, s stratum, action Action, stdout, stderr io.Writer) error
 		return errors.Errorf("%s is an OS not defined in the stratum", action)
 	}
 
+	shell, ok := j.shell(c.Shell)
+	if !ok {
+		return errors.Errorf("%s is a shell not defined in the stratum", c.Shell)
+	}
+
+	cmd := exec.Command(shell)
+
+	cmd.Env = append(cmd.Environ(),
+		fmt.Sprintf("QPM_OS=%s", runtime.GOOS),
+		fmt.Sprintf("QPM_ARCH=%s", runtime.GOARCH),
+	)
+
+	cmd.Stdout, cmd.Stderr = stdout, stderr
+
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return err
 	}
 
-	for i, r := range j.steps {
-		io.WriteString(stdin, fmt.Sprintf(`echo "\e[96m[%d/%d] %s\e[m"`+"\n", i+1, len(j.steps), shellEscapeReplacer.Replace(r.name)))
+	fmt.Fprintf(stdin, "echo '\\e[33m%s %s by %s\\e[m'\n", action, s.Name, shell)
+	for i, r := range j.step {
+		io.WriteString(
+			stdin,
+			fmt.Sprintf(`echo "\e[96m[%d/%d] %s\e[m"`+"\n", i+1, len(j.step), shellEscapeReplacer.Replace(r.name)),
+		)
 		io.WriteString(stdin, fmt.Sprintln(r.run))
 		io.WriteString(stdin, fmt.Sprintln(`if [ "$?" != 0 ]; then exit 1; fi`))
 	}

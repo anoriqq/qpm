@@ -13,7 +13,7 @@ func TestQPM_ReadAquifer(t *testing.T) {
 	c := Config{
 		AquiferPath:   "./testdata/",
 		AquiferRemote: &url.URL{},
-		Shell:         "zsh",
+		Shell:         []string{"zsh"},
 	}
 
 	a, err := ReadStratum(c, "foo")
@@ -29,11 +29,32 @@ func TestQPM_ReadAquifer(t *testing.T) {
 	t.Fail()
 }
 
+func TestQPM_ReadStratum(t *testing.T) {
+	c := Config{
+		AquiferPath: "./testdata/",
+	}
+
+	// Act
+	got, err := ReadStratum(c, "foo")
+
+	// Assert
+	if cmp.Diff(nil, err) != "" {
+		t.Fatalf("%+v\n", err)
+	}
+	want := stratum{
+		Name: "foo",
+		Plan: plan{},
+	}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("mismatch (-want +got):\n%s", diff)
+	}
+}
+
 func TestQPM_Execute(t *testing.T) {
 	c := Config{
 		AquiferPath:   "./testdata/",
 		AquiferRemote: &url.URL{},
-		Shell:         "zsh",
+		Shell:         []string{"zsh"},
 	}
 
 	err := Execute(c, stratum{}, "", bufio.NewWriter(os.Stdout), bufio.NewWriter(os.Stderr))
