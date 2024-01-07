@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/anoriqq/qpm"
 	"github.com/anoriqq/qpm/cmd/qpm/internal/config"
@@ -56,7 +57,7 @@ func init() {
 				} else {
 					c.GitHubToken = v
 				}
-				if v, err := SurveyShell(&current.Shell); err != nil {
+				if v, err := SurveyShell(current.Shell); err != nil {
 					return err
 				} else {
 					c.Shell = v
@@ -150,18 +151,18 @@ func SurveyGitHubToken(current *string) (string, error) {
 	return v, nil
 }
 
-func SurveyShell(current *string) (string, error) {
+func SurveyShell(current []string) ([]string, error) {
 	msg := "Please enter shell command you want to use to execute stratum."
 
-	def := "bash"
-	if current != nil && *current != "" {
-		def = *current
+	var def []string
+	if len(current) > 0 {
+		def = current
 	}
 
-	v, err := survey.AskOneInputRequired(msg, def)
+	v, err := survey.AskOneInputRequired(msg, strings.Join(def, ","))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return v, nil
+	return strings.Split(v, ","), nil
 }

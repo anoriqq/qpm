@@ -71,7 +71,7 @@ func WriteConfig(c qpm.Config, path string) error {
 	r[configNameAquiferRemote] = c.AquiferRemote.String()
 	r[configNameGithubUsername] = c.GitHubUsername
 	r[configNameGithubToken] = c.GitHubToken
-	r[configNameShell] = c.Shell
+	r[configNameShell] = strings.Join(c.Shell, ",")
 
 	b, err := yaml.Marshal(r)
 	if err != nil {
@@ -113,7 +113,7 @@ func ReadConfig(path string) (qpm.Config, error) {
 		AquiferRemote:  remoteURL,
 		GitHubUsername: c[configNameGithubUsername],
 		GitHubToken:    c[configNameGithubToken],
-		Shell:          c[configNameShell],
+		Shell:          strings.Split(c[configNameShell], ","),
 	}, nil
 }
 
