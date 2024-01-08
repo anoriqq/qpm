@@ -75,6 +75,49 @@ func parseOS(v string) (OS, error) {
 	return "", errors.Errorf("unknown OS v=%q", v)
 }
 
+type stratumFile map[string][]struct {
+	OS         []string
+	Shell      []string
+	Dependency []string
+	Step       []any
+}
+
+// readStratumFile 指定pathのファイルをstratumFileとして読み込む
+func readStratumFile(aquiferPath, stratumName string) (stratumFile, error) {
+	path := os.ExpandEnv(aquiferPath)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return nil, fmt.Errorf("aquifer not found in %s", path)
+	}
+
+	stratumPath, err := filepath.Abs(fmt.Sprintf("%s/%s.yml", path, stratumName))
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := os.Stat(stratumPath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("stratum not found path=%s", stratumPath)
+	}
+
+	f, err := os.Open(stratumPath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	b, err := io.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+
+	var dest stratumFile
+	if err := yaml.Unmarshal(b, &dest); err != nil {
+		fmt.Println(yaml.FormatError(err, true, true))
+		return nil, err
+	}
+
+	return dest, nil
+}
+
 type (
 	osToJob map[OS]job
 	plan    map[Action]osToJob
@@ -86,39 +129,8 @@ type (
 
 // ReadStratum AquiferPathにあるStratumのうち、指定されたStratumを取得する。
 func ReadStratum(c Config, name string) (stratum, error) {
-	path := os.ExpandEnv(c.AquiferPath)
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return stratum{}, fmt.Errorf("aquifer not found in %s", path)
-	}
-
-	stratumPath, err := filepath.Abs(fmt.Sprintf("%s/%s.yml", path, name))
+	sf, err := readStratumFile(c.AquiferPath, name)
 	if err != nil {
-		return stratum{}, err
-	}
-
-	if _, err := os.Stat(stratumPath); os.IsNotExist(err) {
-		return stratum{}, fmt.Errorf("stratum not found path=%s", stratumPath)
-	}
-
-	f, err := os.Open(stratumPath)
-	if err != nil {
-		return stratum{}, err
-	}
-	defer f.Close()
-
-	b, err := io.ReadAll(f)
-	if err != nil {
-		return stratum{}, err
-	}
-
-	var ay map[string][]struct {
-		OS         []string
-		Shell      []string
-		Dependency []string
-		Step       []any
-	}
-	if err := yaml.Unmarshal(b, &ay); err != nil {
-		fmt.Println(yaml.FormatError(err, true, true))
 		return stratum{}, err
 	}
 
@@ -126,7 +138,7 @@ func ReadStratum(c Config, name string) (stratum, error) {
 		Plan: make(plan),
 		Name: name,
 	}
-	for actionStr, jobs := range ay {
+	for actionStr, jobs := range sf {
 		action, err := parseAction(actionStr)
 		if err != nil {
 			return stratum{}, err
