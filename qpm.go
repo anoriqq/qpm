@@ -36,10 +36,17 @@ func PullAquifer(ctx context.Context, c Config) error {
 	return nil
 }
 
-type (
-	Action string
-	OS     string
-)
+type Action string
+
+func (a Action) String() string {
+	return string(a)
+}
+
+type OS string
+
+func (os OS) String() string {
+	return string(os)
+}
 
 const (
 	Install   Action = "install"
@@ -217,8 +224,8 @@ var shellEscapeReplacer = strings.NewReplacer("$", `\$`)
 
 var ErrPackageAlreadyInstalled = errors.New("package already installed")
 
-func IsAlreadyInstalled(s stratum) (bool, error) {
-	path, err := exec.LookPath(s.Name)
+func IsAlreadyInstalled(name string) (bool, error) {
+	path, err := exec.LookPath(name)
 	if err != nil {
 		if errors.Is(err, exec.ErrNotFound) {
 			return false, nil
@@ -234,15 +241,63 @@ func IsAlreadyInstalled(s stratum) (bool, error) {
 }
 
 // Execute aquiferを実行する。
-func Execute(c Config, s stratum, action Action, stdout, stderr io.Writer) error {
+func Execute(c Config, st stratum, action Action, stdout, stderr io.Writer) error {
+	OS, err := parseOS(runtime.GOOS)
+	if err != nil {
+		return err
+	}
+
+	ss := make(map[string][]string)
+	ss[st.Name] = st.Plan[action][OS].dependency
+
+	if err := dependencies(c, action, OS, st.Name, ss); err != nil {
+		return err
+	}
+
+	cc := make(map[string]chan uint8, len(ss))
+	for name := range ss {
+		cc[name] = make(chan uint8, 1)
+	}
+
+	mt := newMultiTaskExec()
+
+	for name, deps := range ss {
+		mt.add(name, deps)
+	}
+
+	mt.wait(func(name string) {
+		if name != st.Name {
+			if installed, error := IsAlreadyInstalled(name); error != nil {
+				panic(error)
+			} else if installed {
+				return
+			}
+		}
+
+		s, err := ReadStratum(c, name)
+		if err != nil {
+			panic(err)
+		}
+
+		if name == st.Name {
+			if err := execute(c, s, action, OS, stdout, stderr); err != nil {
+				panic(err)
+			}
+		} else {
+			if err := execute(c, s, Install, OS, io.Discard, stderr); err != nil {
+				panic(err)
+			}
+			fmt.Println(name)
+		}
+	})
+
+	return nil
+}
+
+func execute(c Config, s stratum, action Action, os OS, stdout, stderr io.Writer) error {
 	a, ok := s.Plan[action]
 	if !ok {
 		return errors.Errorf("%s is an Action not defined in the stratum", action)
-	}
-
-	os, err := parseOS(runtime.GOOS)
-	if err != nil {
-		return err
 	}
 
 	j, ok := a[os]
