@@ -29,6 +29,33 @@ func TestQPM_ReadAquifer(t *testing.T) {
 	t.Fail()
 }
 
+func TestQPM_readStratumFile(t *testing.T) {
+	t.Parallel()
+
+	// Act
+	got, err := readStratumFile("./testdata/", "foo")
+
+	// Assert
+	if cmp.Diff(nil, err) != "" {
+		t.Fatalf("%+v\n", err)
+	}
+	want := stratumFile{
+		"install": {{
+			OS:         []string{"linux", "darwin"},
+			Shell:      []string{"zsh", "bash", "sh"},
+			Dependency: []string{"echo"},
+			Step: []any{
+				map[string]any{"name": "Step 1", "run": "echo install for unix"},
+				"sleep 2",
+				"echo install for unix",
+			},
+		}},
+	}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("mismatch (-want +got):\n%s", diff)
+	}
+}
+
 func TestQPM_ReadStratum(t *testing.T) {
 	c := Config{
 		AquiferPath: "./testdata/",

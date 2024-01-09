@@ -41,7 +41,7 @@ func init() {
 				return err
 			}
 
-			if alreadyInstalled, err := qpm.IsAlreadyInstalled(s); err != nil {
+			if alreadyInstalled, err := qpm.IsAlreadyInstalled(s.Name); err != nil {
 				return err
 			} else {
 				if alreadyInstalled {
