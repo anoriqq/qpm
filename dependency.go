@@ -8,18 +8,24 @@ import (
 
 // dependencies stratumの依存しているstratumを再帰的に取得する
 func dependencies(c Config, a Action, os OS, stratumName string, knownDeps map[string][]string) error {
-	sf, err := readStratumFile(c.AquiferPath, stratumName)
-	if err != nil {
-		return err
+	if _, ok := knownDeps[stratumName]; ok {
+		return nil
 	}
 
-	jobs := sf[a.String()]
-
 	var deps []string
-	for _, v := range jobs {
-		if slices.Contains(v.OS, os.String()) {
-			deps = v.Dependency
-			break
+	if installed, error := IsAlreadyInstalled(stratumName); error != nil {
+		return error
+	} else if !installed {
+		sf, err := readStratumFile(c.AquiferPath, stratumName)
+		if err != nil {
+			return err
+		}
+
+		for _, v := range sf[a.String()] {
+			if slices.Contains(v.OS, os.String()) {
+				deps = v.Dependency
+				break
+			}
 		}
 	}
 

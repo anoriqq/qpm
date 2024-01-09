@@ -251,7 +251,6 @@ func Execute(c Config, st stratum, action Action, stdout, stderr io.Writer) erro
 	}
 
 	ss := make(map[string][]string)
-	ss[st.Name] = st.Plan[action][OS].dependency
 
 	if err := dependencies(c, action, OS, st.Name, ss); err != nil {
 		return err
