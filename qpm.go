@@ -10,10 +10,13 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/goccy/go-yaml"
 	"github.com/pkg/errors"
+	"github.com/vbauerster/mpb/v8"
+	"github.com/vbauerster/mpb/v8/decor"
 	"golang.org/x/exp/slices"
 )
 
@@ -265,6 +268,11 @@ func Execute(c Config, st stratum, action Action, stdout, stderr io.Writer) erro
 		mt.add(name, deps)
 	}
 
+	p := mpb.New(
+		mpb.PopCompletedMode(),
+		mpb.WithWidth(2),
+	)
+
 	mt.wait(func(name string) {
 		if name != st.Name {
 			if installed, error := IsAlreadyInstalled(name); error != nil {
@@ -274,12 +282,28 @@ func Execute(c Config, st stratum, action Action, stdout, stderr io.Writer) erro
 			}
 		}
 
+		var bar *mpb.Bar
+		if name != st.Name {
+			frames := "█▇▆▅▄▃▂▁"
+			bar = p.MustAdd(
+				int64(1),
+				mpb.SpinnerStyle(strings.Split(frames, "")...).Meta(func(s string) string { return " " + s }).Build(),
+				mpb.BarFillerTrim(),
+				mpb.PrependDecorators(decor.Name("Install "+name)),
+				mpb.AppendDecorators(
+					decor.OnComplete(decor.NewElapsed(decor.ET_STYLE_GO, time.Now(), decor.WCSyncSpace), "✅"),
+				),
+				mpb.BarFillerClearOnComplete(),
+			)
+		}
+
 		s, err := ReadStratum(c, name)
 		if err != nil {
 			panic(err)
 		}
 
 		if name == st.Name {
+			time.Sleep(100 * time.Millisecond)
 			if err := execute(c, s, action, OS, stdout, stderr); err != nil {
 				panic(err)
 			}
@@ -287,7 +311,7 @@ func Execute(c Config, st stratum, action Action, stdout, stderr io.Writer) erro
 			if err := execute(c, s, Install, OS, io.Discard, stderr); err != nil {
 				panic(err)
 			}
-			fmt.Println(name)
+			bar.Increment()
 		}
 	})
 
