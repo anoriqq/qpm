@@ -9,7 +9,7 @@ require (
 	github.com/goccy/go-yaml v1.11.3
 	github.com/google/go-cmp v0.6.0
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/vbauerster/mpb/v8 v8.7.3
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
 )
