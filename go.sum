@@ -111,6 +111,8 @@ github.com/goccy/go-yaml v1.15.10 h1:9exV2CDYm/FWHPptIIgcDiPQS+X/4uTR+HEl+GF9xJU
 github.com/goccy/go-yaml v1.15.10/go.mod h1:XBurs7gK8ATbW4ZPGKgcbrY1Br56PdM69F7LkFRi1kA=
 github.com/goccy/go-yaml v1.15.11 h1:XeEd/2INF0TXXWMzJ9ALqJLGjGDl4PIi1gmrK+7KpAs=
 github.com/goccy/go-yaml v1.15.11/go.mod h1:XBurs7gK8ATbW4ZPGKgcbrY1Br56PdM69F7LkFRi1kA=
+github.com/goccy/go-yaml v1.15.12 h1:KLUSwfrUcTU6F8sAkf23OIPYC6aFVMNFSu4btROEm6w=
+github.com/goccy/go-yaml v1.15.12/go.mod h1:XBurs7gK8ATbW4ZPGKgcbrY1Br56PdM69F7LkFRi1kA=
 github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da h1:oI5xCqsCo564l8iNU+DwB5epxmsaqB+rhGL0m5jtYqE=
 github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
