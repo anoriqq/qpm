@@ -2,7 +2,7 @@ module github.com/anoriqq/qpm
 
 go 1.22.0
 
-toolchain go1.23.6
+toolchain go1.24.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
