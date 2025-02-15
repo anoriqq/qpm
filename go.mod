@@ -1,6 +1,6 @@
 module github.com/anoriqq/qpm
 
-go 1.22.0
+go 1.23.0
 
 toolchain go1.24.0
 
@@ -13,7 +13,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
 	github.com/vbauerster/mpb/v8 v8.9.2
-	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac
+	golang.org/x/exp v0.0.0-20250215185904-eff6e970281f
 )
 
 require (
