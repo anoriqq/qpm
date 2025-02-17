@@ -11,7 +11,7 @@ require (
 	github.com/goccy/go-yaml v1.15.23
 	github.com/google/go-cmp v0.6.0
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.9.0
+	github.com/spf13/cobra v1.9.1
 	github.com/vbauerster/mpb/v8 v8.9.2
 	golang.org/x/exp v0.0.0-20250215185904-eff6e970281f
 )
