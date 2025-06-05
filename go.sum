@@ -289,6 +289,8 @@ github.com/vbauerster/mpb/v8 v8.10.0 h1:5ZYEWM4ovaZGAibjzW4PlQNb5k+JpzMqVwgNyk+K
 github.com/vbauerster/mpb/v8 v8.10.0/go.mod h1:DYPFebxSahB+f7tuEUGauLQ7w8ij3wMr4clsVuJCV4I=
 github.com/vbauerster/mpb/v8 v8.10.1 h1:t/ZFv/NYgoBUy2LrmkD5Vc25r+JhoS4+gRkjVbolO2Y=
 github.com/vbauerster/mpb/v8 v8.10.1/go.mod h1:+Ja4P92E3/CorSZgfDtK46D7AVbDqmBQRTmyTqPElo0=
+github.com/vbauerster/mpb/v8 v8.10.2 h1:2uBykSHAYHekE11YvJhKxYmLATKHAGorZwFlyNw4hHM=
+github.com/vbauerster/mpb/v8 v8.10.2/go.mod h1:+Ja4P92E3/CorSZgfDtK46D7AVbDqmBQRTmyTqPElo0=
 github.com/xanzy/ssh-agent v0.3.3 h1:+/15pJfg/RsTxqYcX6fHqOXZwwMP+2VyYWJeWM2qQFM=
 github.com/xanzy/ssh-agent v0.3.3/go.mod h1:6dzNDKs0J9rVPHPhaGCukekBHKqfl+L3KghI1Bc68Uw=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
