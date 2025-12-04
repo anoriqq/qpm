@@ -2,7 +2,7 @@ module github.com/anoriqq/qpm
 
 go 1.24.0
 
-toolchain go1.25.4
+toolchain go1.25.5
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
@@ -11,7 +11,7 @@ require (
 	github.com/goccy/go-yaml v1.18.0
 	github.com/google/go-cmp v0.7.0
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	github.com/vbauerster/mpb/v8 v8.11.2
 	golang.org/x/exp v0.0.0-20251125195548-87e1e737ad39
 )
