@@ -7,8 +7,8 @@ toolchain go1.26.0
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/fatih/color v1.18.0
-	github.com/go-git/go-git/v5 v5.16.4
-	github.com/goccy/go-yaml v1.19.1
+	github.com/go-git/go-git/v5 v5.16.5
+	github.com/goccy/go-yaml v1.19.2
 	github.com/google/go-cmp v0.7.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.10.2
