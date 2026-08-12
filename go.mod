@@ -13,7 +13,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.10.2
 	github.com/vbauerster/mpb/v8 v8.15.2
-	golang.org/x/exp v0.0.0-20260810151157-a8b543ca52da
+	golang.org/x/exp v0.0.0-20260811152304-ee035b5b010f
 )
 
 require (
