@@ -660,6 +660,8 @@ golang.org/x/exp v0.0.0-20261109185158-a52e3aef5920 h1:qr+tk4P56rtbVVAJDyAr5LAOi
 golang.org/x/exp v0.0.0-20261109185158-a52e3aef5920/go.mod h1:J3U+E8RzytcGvwz+uJuAP4zULJ2TkAQBnmPZMexpdXs=
 golang.org/x/exp v0.0.0-20261112162710-dab199d8bf38 h1:TEfr+si4lXFLkDs5vA1AHO+H+rAgl2t3o1nymGanQ50=
 golang.org/x/exp v0.0.0-20261112162710-dab199d8bf38/go.mod h1:J3U+E8RzytcGvwz+uJuAP4zULJ2TkAQBnmPZMexpdXs=
+golang.org/x/exp v0.0.0-20261112173441-d10d3b464990 h1:Ki27Rkann+mW+hv34e1eegTr8npmBX7sTq/1TV1eW8Y=
+golang.org/x/exp v0.0.0-20261112173441-d10d3b464990/go.mod h1:J3U+E8RzytcGvwz+uJuAP4zULJ2TkAQBnmPZMexpdXs=
 golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4/go.mod h1:jJ57K6gSWd91VN4djpZkiMVwK6gcyfeH4XE8wZrZaV4=
 golang.org/x/mod v0.8.0/go.mod h1:iBbtSCu2XBx23ZKBPSOrRkjjQPZFPuis4dIYUhu/chs=
 golang.org/x/mod v0.14.0 h1:dGoOF9QVLYng8IHTm7BAyWqCqSheQ5pYWGhzW00YJr0=
