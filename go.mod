@@ -13,7 +13,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.10.2
 	github.com/vbauerster/mpb/v8 v8.16.3
-	golang.org/x/exp v0.0.0-20261113113407-e3970619a1a4
+	golang.org/x/exp v0.0.0-20261117202309-7a49493bfd90
 )
 
 require (
@@ -46,14 +46,14 @@ require (
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/vbauerster/cupwriter v0.0.5 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/mod v0.42.0 // indirect
-	golang.org/x/net v0.61.0 // indirect
-	golang.org/x/sync v0.24.0 // indirect
-	golang.org/x/sys v0.49.0 // indirect
-	golang.org/x/term v0.47.0 // indirect
-	golang.org/x/text v0.43.0 // indirect
-	golang.org/x/tools v0.52.1-0.20261106145633-d407941a339a // indirect
+	golang.org/x/crypto v0.59.0 // indirect
+	golang.org/x/mod v0.43.0 // indirect
+	golang.org/x/net v0.63.0 // indirect
+	golang.org/x/sync v0.25.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
+	golang.org/x/term v0.48.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
+	golang.org/x/tools v0.53.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
