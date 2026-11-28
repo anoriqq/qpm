@@ -13,7 +13,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.10.2
 	github.com/vbauerster/mpb/v8 v8.16.3
-	golang.org/x/exp v0.0.0-20261120182113-8801fbdfac81
+	golang.org/x/exp v0.0.0-20261128033645-f63ec7c7eed0
 )
 
 require (
@@ -53,7 +53,7 @@ require (
 	golang.org/x/sys v0.50.0 // indirect
 	golang.org/x/term v0.48.0 // indirect
 	golang.org/x/text v0.44.0 // indirect
-	golang.org/x/tools v0.53.0 // indirect
+	golang.org/x/tools v0.53.1-0.20261126161324-9b1bd87ef490 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
